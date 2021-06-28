@@ -5,4 +5,5 @@ INSERT IGNORE INTO `engine4_core_menuitems` (`name`, `module`, `label`, `plugin`
 
 ('bill_admin_main_manage', 'bill', 'View Bills', '', '{"route":"admin_default","module":"bill","controller":"manage"}', 'bill_admin_main', '', 1),
 ('bill_admin_main_settings', 'bill', 'Global Settings', '', '{"route":"admin_default","module":"bill","controller":"settings"}', 'bill_admin_main', '', 2),
-('bill_admin_main_level', 'bill', 'Member Level Settings', '', '{"route":"admin_default","module":"bill","controller":"level"}', 'bill_admin_main', '', 3);
+('bill_admin_main_level', 'bill', 'Member Level Settings', '', '{"route":"admin_default","module":"bill","controller":"level"}', 'bill_admin_main', '', 3),
+('core_admin_main_plugins_bill', 'bill', 'Bills', '', '{"route":"admin_default","module":"bill","controller":"manage"}', 'core_admin_main_plugins', '', 999);

@@ -26,8 +26,6 @@ while($row = mysqli_fetch_assoc($result)) {
       //           }
 
 ?>
-<!-- echo $row_n;
-	die(); -->
 	<div class="layout_middle">
 		<div class="generic_layout_container">
 			<div class="headline">
@@ -51,14 +49,16 @@ while($row = mysqli_fetch_assoc($result)) {
 	<script type="text/javascript">
 		
 		let productsArr = <?php echo json_encode($rows);?>;
-
+		let room=productsArr.length;
+document.getElementById('room').value=room;
+let totalfiels=room;
 
 
 		function addfield(product,i){
 
-			var objTo = document.getElementById('number-element')
+			var objTo = document.getElementById('initial_row')
 			var divtest = document.createElement("div");
-    // divtest.setAttribute('id','initial_row');
+			divtest.setAttribute('id',i);
     divtest.innerHTML = `<div class="label"></div><div class="content">
 
     <span><input type="text" style="height:40px;width:300px;" name="p_name${i}" value="${product['product_name']}" placeholder="Product Name"/></span>&nbsp;
@@ -67,16 +67,18 @@ while($row = mysqli_fetch_assoc($result)) {
 
     <span><input type="number" step ="any" style="height:40px;width:80px;" name="price${i}" value="${product['price']}" onkeyup="total_price(this)" placeholder="Price"/></span>&nbsp;
 
-    <span><input type="number" step ="any" style="height:40px;width:80px;" name="total${i}" value="${product['total']}" placeholder="Total"/></span></div>`;
+    <span><input type="number" step ="any" style="height:40px;width:80px;" name="total${i}" value="${product['total']}" placeholder="Total"/></span>
+&nbsp;<span><button onclick="remove_product(this)" id="row${i}" style="height:40px; ">x</button></span>
+    </div>`;
 
     objTo.append(divtest);
 }
 
-function addfield_f(product, i){
+function addfield_f(product, i){ 
 
 			var objTo = document.getElementById('number-element')
 			var divtest = document.createElement("div");
-    // divtest.setAttribute('id','initial_row');
+			divtest.setAttribute('id','initial_row');
     divtest.innerHTML = `<div class="label">Product Details:</div><div class="content">
 
     <span><input type="text" style="height:40px;width:300px;" name="p_name${i}" value="${product['product_name']}" placeholder="Product Name"/></span>&nbsp;
@@ -99,7 +101,7 @@ for(let i=0;i<productsArr.length;i++){
 	addfield(productsArr[i],i+1);
 }
 }
-document.getElementById('room').value=productsArr.length;
+
 // en4.core.runonce.add(()=> {
 // document.getElementById('room').value=productsArr.length;
 // })
@@ -128,6 +130,36 @@ function total_price(element){
       // scriptJquery('#state').val('');
     }
   }
+function remove_product(element)
+{
+	totalfiels--;
+	let id = element.id.substring(3);
+	let elem = document.getElementById(id);
+	elem.remove();
+}
+
+
+function addelement(){
+	if(totalfiels>=5){
+		alert("you can not add products more than 5")
+	}
+	else{
+		room++;
+		totalfiels++;
+		var objTo = document.getElementById('initial_row')
+		var divtest = document.createElement("div");
+		divtest.setAttribute('id',room);
+		divtest.innerHTML = `<div class="label"></div><div class="content"><span><input type="text" style="height:40px;width:300px;" name="p_name${room}"value="" placeholder="Product Name"/></span>&nbsp;
+		<span><input type="number" step ="any" style="height:40px;width:80px;" name="quantity${room}" value="0" placeholder="Quantity"/></span>&nbsp;
+		<span><input type="number" step ="any" style="height:40px;width:80px;" name="price${room}" onkeyup="total_price(this)" placeholder="Price"/></span>&nbsp;
+		<span><input type="number" step ="any" style="height:40px;width:80px;" name="total${room}" value="" placeholder="Total"/></span>&nbsp;
+		<span><button onclick="remove_product(this)" id="row${room}" style="height:40px; ">x</button></span></div>`;
+
+		objTo.append(divtest);
+		document.getElementById('room').value=room;
+
+	}
+}
 
 
 </script>

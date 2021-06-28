@@ -40,27 +40,9 @@
 					), $this->translate('View Entry'), array(
 						'class' => 'buttonlink icon_blog_edit',
 					)) ?>
-					<?php echo $this->htmlLink(array(
-						'action' => 'edit',
-						'bill_id' => $item->getIdentity(),
-						'route' => 'bill_edit',
-						'reset' => true,
-					), $this->translate('Download'), array(
-						'class' => 'buttonlink icon_blog_edit',
-					)) ?>
-					<?php echo $this->htmlLink(array(
-						'action' => 'edit',
-						'bill_id' => $item->getIdentity(),
-						'route' => 'bill_edit',
-						'reset' => true,
-					), $this->translate('Print'), array(
-						'class' => 'buttonlink icon_blog_edit',
-					)) ?>
-
-
 
 					<?php
-					echo $this->htmlLink(array('route' => 'default', 'module' => 'bill', 'controller' => 'index', 'action' => 'delete', 'bill' => $item->getIdentity(), 'format' => 'smoothbox'), $this->translate('Delete Entry'), array(
+					echo $this->htmlLink(array('route' => 'bill_edit', 'module' => 'bill', 'controller' => 'index', 'action' => 'delete', 'bill_id' => $item->getIdentity(), 'format' => 'smoothbox'), $this->translate('Delete Entry'), array(
 						'class' => 'buttonlink smoothbox icon_blog_delete'
 					));
 					?>

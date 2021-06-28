@@ -11,8 +11,9 @@ class Bill_IndexController extends Core_Controller_Action_Standard
             //->setNoRender()
     ->setEnabled()
     ;
-
+if( !$this->_helper->requireAuth()->setAuthParams('bill', null, 'view')->isValid()) return;
     if (!$this->_helper->requireUser()->isValid()) return;
+
 
 
     $this->view->form = $form = new Bill_Form_Search();
@@ -33,7 +34,7 @@ class Bill_IndexController extends Core_Controller_Action_Standard
       $this->view->assign($values);
 
        $this->view->paginator = $paginator = Engine_Api::_()->getItemTable('bill')->getInvoicesPaginator($values);
-    $items_per_page = 2;
+    $items_per_page = Engine_Api::_()->getApi('settings', 'core')->bill_page;
     $paginator->setItemCountPerPage($items_per_page);
     $this->view->paginator = $paginator->setCurrentPageNumber($this->_getParam('page'));
 
@@ -47,10 +48,10 @@ class Bill_IndexController extends Core_Controller_Action_Standard
   if( !$this->_helper->requireUser()->isValid() ) return;
   $viewer = Engine_Api::_()->user()->getViewer();
   $values = $viewer->getIdentity();
-
+if( !$this->_helper->requireAuth()->setAuthParams('bill', null, 'view')->isValid()) return;
 
   $this->view->paginator = $paginator = Engine_Api::_()->getItemTable('bill')->getOwnerBillsPaginator($values);
-  $items_per_page = Engine_Api::_()->getApi('settings', 'core')->invoice_page;
+  $items_per_page = Engine_Api::_()->getApi('settings', 'core')->bill_page;
   $paginator->setItemCountPerPage($items_per_page);
   $this->view->paginator = $paginator->setCurrentPageNumber($this->_getParam('page'));
 
@@ -61,7 +62,7 @@ public function createAction()
   if (!$this->_helper->requireUser()->isValid()) return;
   $this->view->navigation = $navigation = Engine_Api::_()->getApi('menus', 'core')
   ->getNavigation('bill_main');
-
+if( !$this->_helper->requireAuth()->setAuthParams('bill', null, 'create')->isValid()) return;
   $viewer = Engine_Api::_()->user()->getViewer();
   $values['user_id'] = $viewer->getIdentity();
   $this->view->form = $form = new Bill_Form_Create();
@@ -189,6 +190,7 @@ public function editAction()
 
   $viewer = Engine_Api::_()->user()->getViewer();
   $bill = Engine_Api::_()->getItem('bill', $this->_getParam('bill_id'));
+  if( !$this->_helper->requireAuth()->setAuthParams('bill', null, 'edit')->isValid()) return;
 
     //database connection:
 
@@ -297,7 +299,7 @@ try {
 
 
 
-return $this->_helper->redirector->gotoRoute(array('action' => 'edit'));
+return $this->_helper->redirector->gotoRoute(array('action' => 'manage'));
 }
 
 
@@ -305,6 +307,8 @@ public function viewAction(){
 
   $this->view->navigation = $navigation = Engine_Api::_()->getApi('menus', 'core')
   ->getNavigation('bill_main');
+
+  if( !$this->_helper->requireAuth()->setAuthParams('bill', null, 'view')->isValid()) return;
 
   $bill = Engine_Api::_()->getItem('bill', $this->_getParam('bill_id'));
           // print_r($bill->toArray());
@@ -320,6 +324,7 @@ public function deleteAction(){
 
   $viewer = Engine_Api::_()->user()->getViewer();
     $bill = Engine_Api::_()->getItem('bill', $this->getRequest()->getParam('bill_id'));
+     if( !$this->_helper->requireAuth()->setAuthParams('bill', null, 'delete')->isValid()) return;
     $this->_helper->layout->setLayout('default-simple');
     $this->view->form = $form = new Bill_Form_Delete();
     $bill_number=$bill['bill_number'];

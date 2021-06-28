@@ -54,25 +54,57 @@ $row_n = mysqli_num_rows($result);
 ?>
 <script type="text/javascript">
 
+    window.jsPDF = window.jspdf.jsPDF;
+        function printDiv(divName) {
+     var printContents = document.getElementById(divName).innerHTML;
+     var originalContents = document.body.innerHTML;
+
+     document.body.innerHTML = printContents;
+
+     window.print();
+
+     document.body.innerHTML = originalContents;
+}
+ 
+var doc = new jsPDF();
+    var specialElementHandlers = {
+        '#editor': function (element, renderer) {
+            return true;
+        }
+    };
+
+    $('#save').click(function () {
+        doc.fromHTML($('#container').html(), 15, 15, {
+            'width': 170,
+                'elementHandlers': specialElementHandlers
+        });
+        doc.save('sample-file.pdf');
+    });
+
+
 		</script>
 
 
-
+<html>
 <head>
         <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta.2/css/bootstrap.css'>
+<script src = "https://raw.githubusercontent.com/MrRio/jsPDF/master/dist/jspdf.debug.js"></script>
 </head>
 <body>
-    <div class="container">
+    <script src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js"></script>
+
+    <div class="container" id="container">
         <div class="card">
             <div class="card-header">
                 Invoice 
                 <strong><?php echo $this->bill_details['bill_number']?></strong>
-                <a class="btn btn-sm btn-secondary float-right mr-1 d-print-none" href="#" onclick="javascript:window.print();" data-abc="true">
-                        <i class="fa fa-print"></i> Print</a>
-                    <a class="btn btn-sm btn-info float-right mr-1 d-print-none" href="#" data-abc="true">
-                        <i class="fa fa-save"></i> Save</a>
+                <button class="btn btn-sm btn-secondary float-right mr-1 d-print-none" h onclick="printDiv('print')" data-abc="true">
+                        <i class="fa fa-print"></i> Print</button>
+                    <button id="save" class="btn btn-sm btn-info float-right mr-1 d-print-none"  data-abc="true">
+                        <i class="fa fa-save"></i> Save</button>
                
             </div>
+            <div id='print'>
             <div class="card-body">
                 <div class="row mb-4">
                     <div class="col-sm-4">
@@ -212,6 +244,8 @@ $row_n = mysqli_num_rows($result);
                 </div>
             </div>
         </div>
+        </div>
     </div>
+    <div id="editor"></div>
 </body>
 </html>

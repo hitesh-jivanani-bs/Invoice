@@ -20,6 +20,11 @@
       3 => 'enable',
       4 => 'disable',
     ),
+
+    'callback' => array(
+      'path' => 'application/modules/Bill/settings/install.php',
+      'class' => 'Bill_Installer',
+    ),
     'directories' => 
     array (
       0 => 'application/modules/Bill',
@@ -35,6 +40,14 @@
   ),
 
 
+
+ // Hooks ---------------------------------------------------------------------
+  'hooks' => array(
+    array(
+      'event' => 'onUserDeleteBefore',
+      'resource' => 'Bill_Plugin_Core',
+    ),
+  ),
 
   'routes' => array(
     // Public

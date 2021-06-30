@@ -35,14 +35,7 @@
           ), $this->translate('View Entry'), array(
             'class' => 'buttonlink icon_blog_edit',
           )) ?>
-          <?php echo $this->htmlLink(array(
-            'action' => 'edit',
-            'bill_id' => $item->getIdentity(),
-            'route' => 'bill_edit',
-            'reset' => true,
-          ), $this->translate('Download'), array(
-            'class' => 'buttonlink icon_blog_edit',
-          )) ?>
+      
         </div>
 
         <div class='blogs_info'>

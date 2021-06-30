@@ -46,15 +46,14 @@ $query = "SELECT * FROM engine4_bill_products WHERE bill_number = '$bill_number'
 $result = mysqli_query($conn, $query);
 $row_n = mysqli_num_rows($result);
 
-// $rows = array();
-// while($row = mysqli_fetch_assoc($result)) {
-
-//   $rows[] = $row;
-// }
 ?>
+
+
+
+
+
 <script type="text/javascript">
 
-    window.jsPDF = window.jspdf.jsPDF;
         function printDiv(divName) {
      var printContents = document.getElementById(divName).innerHTML;
      var originalContents = document.body.innerHTML;
@@ -65,30 +64,16 @@ $row_n = mysqli_num_rows($result);
 
      document.body.innerHTML = originalContents;
 }
- 
-var doc = new jsPDF();
-    var specialElementHandlers = {
-        '#editor': function (element, renderer) {
-            return true;
-        }
-    };
-
-    $('#save').click(function () {
-        doc.fromHTML($('#container').html(), 15, 15, {
-            'width': 170,
-                'elementHandlers': specialElementHandlers
-        });
-        doc.save('sample-file.pdf');
-    });
 
 
-		</script>
+ </script>
+
+	
 
 
 <html>
 <head>
         <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta.2/css/bootstrap.css'>
-<script src = "https://raw.githubusercontent.com/MrRio/jsPDF/master/dist/jspdf.debug.js"></script>
 </head>
 <body>
     <script src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js"></script>
@@ -98,13 +83,11 @@ var doc = new jsPDF();
             <div class="card-header">
                 Invoice 
                 <strong><?php echo $this->bill_details['bill_number']?></strong>
-                <button class="btn btn-sm btn-secondary float-right mr-1 d-print-none" h onclick="printDiv('print')" data-abc="true">
+                <button class="btn btn-sm btn-secondary float-right mr-1 d-print-none" id ='print' onclick="printDiv('print')" data-abc="true">
                         <i class="fa fa-print"></i> Print</button>
-                    <button id="save" class="btn btn-sm btn-info float-right mr-1 d-print-none"  data-abc="true">
-                        <i class="fa fa-save"></i> Save</button>
                
             </div>
-            <div id='print'>
+            <div id='maincontaint'>
             <div class="card-body">
                 <div class="row mb-4">
                     <div class="col-sm-4">
@@ -249,3 +232,16 @@ var doc = new jsPDF();
     <div id="editor"></div>
 </body>
 </html>
+
+
+<!--  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js"></script>
+      <script type="text/javascript">
+        var doc = new jsPDF();
+        document.getElementById('save').addEventListener('click',function () {
+            doc.fromHTML(document.getElementById('container').innerHTML, 6, 6, {
+                'width': 170,
+                
+            });
+            doc.save('sample-file.pdf');
+        });
+</script> -->

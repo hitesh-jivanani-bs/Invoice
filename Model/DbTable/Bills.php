@@ -7,11 +7,40 @@ class Bill_Model_DbTable_Bills extends Core_Model_Item_DbTable_Abstract
 
 
 public function getOwnerBillsPaginator($owner){
-        $select=$this->select();
+    $viewer = Engine_Api::_()->user()->getViewer();
+        $viewerId = $viewer->getIdentity();
+        $table = Engine_Api::_()->getDbtable('bills', 'bill');
+        $rName = $table->info('name');
+         $select = $table->select()
+
+            ->order($rName.'.date DESC' );
+
         $where=$select->where('owner_id = ?' ,$owner);
         $paginator= Zend_Paginator::factory($where);
         return $paginator;
     }
+
+
+public function getbillsPaginator($params = array()){
+    $viewer = Engine_Api::_()->user()->getViewer();
+        $viewerId = $viewer->getIdentity();
+        $table = Engine_Api::_()->getDbtable('bills', 'bill');
+        $rName = $table->info('name');
+
+        $tmTable = Engine_Api::_()->getDbtable('TagMaps', 'core');
+        $tmName = $tmTable->info('name');
+
+
+        $select=$this->select();
+        $select = $table->select()
+            ->order( !empty($params['orderby']) ? $rName.'.'.$params['orderby'].' DESC' : $rName.'.date DESC' );
+
+        $paginator = Zend_Paginator::factory($select);
+
+        return $paginator;
+
+}
+
 
 public function getInvoicesSelect($params = array()){
         $viewer = Engine_Api::_()->user()->getViewer();
@@ -24,6 +53,9 @@ public function getInvoicesSelect($params = array()){
 
 
         $select=$this->select();
+        $select = $table->select()
+            ->order( !empty($params['orderby']) ? $rName.'.'.$params['orderby'].' DESC' : $rName.'.date DESC' );
+
 
         if(!empty($params['date'])){
         $select=$this->select();
@@ -107,6 +139,7 @@ return $bill_number;
 
 
     public function setBillNumber($domain,$currencies){
+
  	$bill_number='';
  	if($domain==0){
             	$a='SE';
@@ -206,7 +239,7 @@ return $bill_number;
 
             }
 
-            if($domain==0){
+            if($domain==4){
             	$a='OPP';
             	if($currencies==0)
             	{

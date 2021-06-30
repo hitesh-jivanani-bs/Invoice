@@ -4,6 +4,9 @@ class Bill_IndexController extends Core_Controller_Action_Standard
 {
   public function indexAction()
   {
+    //navigation menus...
+
+
     $this->view->navigation = $navigation = Engine_Api::_()->getApi('menus', 'core')
     ->getNavigation('bill_main');
 
@@ -11,6 +14,8 @@ class Bill_IndexController extends Core_Controller_Action_Standard
             //->setNoRender()
     ->setEnabled()
     ;
+
+    //permission check....
 if( !$this->_helper->requireAuth()->setAuthParams('bill', null, 'view')->isValid()) return;
     if (!$this->_helper->requireUser()->isValid()) return;
 
@@ -23,6 +28,10 @@ if( !$this->_helper->requireAuth()->setAuthParams('bill', null, 'view')->isValid
     if( !$viewer->getIdentity() ) {
      $form->removeElement('show');
    }
+
+   //getting form values....
+
+
  $defaultValues = $form->getValues();
   if( $form->isValid($this->_getAllParams()) ) {
             $values = $form->getValues();
@@ -32,6 +41,8 @@ if( !$this->_helper->requireAuth()->setAuthParams('bill', null, 'view')->isValid
         $this->view->formValues = array_filter($values);
 
       $this->view->assign($values);
+
+      //paginator
 
        $this->view->paginator = $paginator = Engine_Api::_()->getItemTable('bill')->getInvoicesPaginator($values);
     $items_per_page = Engine_Api::_()->getApi('settings', 'core')->bill_page;
@@ -48,6 +59,8 @@ if( !$this->_helper->requireAuth()->setAuthParams('bill', null, 'view')->isValid
   if( !$this->_helper->requireUser()->isValid() ) return;
   $viewer = Engine_Api::_()->user()->getViewer();
   $values = $viewer->getIdentity();
+  //checking permission...
+
 if( !$this->_helper->requireAuth()->setAuthParams('bill', null, 'view')->isValid()) return;
 
   $this->view->paginator = $paginator = Engine_Api::_()->getItemTable('bill')->getOwnerBillsPaginator($values);
@@ -62,6 +75,9 @@ public function createAction()
   if (!$this->_helper->requireUser()->isValid()) return;
   $this->view->navigation = $navigation = Engine_Api::_()->getApi('menus', 'core')
   ->getNavigation('bill_main');
+
+//checking permission....
+
 if( !$this->_helper->requireAuth()->setAuthParams('bill', null, 'create')->isValid()) return;
   $viewer = Engine_Api::_()->user()->getViewer();
   $values['user_id'] = $viewer->getIdentity();
@@ -75,7 +91,22 @@ if( !$this->_helper->requireAuth()->setAuthParams('bill', null, 'create')->isVal
     return;
   }
   $v = $this->getRequest()->getPost();
+  //adding atleast one products......
+   if (empty($v['p_name1']) or empty($v['quantity1']) or empty($v['price1'])or empty($v['total1'])) {
+    return $form->addError('Empty Products');
+   }
+
+
+
   $formValues = $form->getValues();
+
+  //mobile number validation...
+        $regex =  "/^(\+\d{1,3}[- ]?)?\d{10}$/";
+        $mobile = $formValues['number'];
+        $isValid = preg_match($regex,$mobile);
+        if(!$isValid) return $form->addError('Mobile number is not valid');
+
+
     //getting tax value:
   $cgst = Engine_Api::_()->getApi('settings', 'core')->getSetting('bill.cgst', 9);
   $sgst = Engine_Api::_()->getApi('settings', 'core')->getSetting('bill.sgst', 9);
@@ -92,8 +123,6 @@ if( !$this->_helper->requireAuth()->setAuthParams('bill', null, 'create')->isVal
   if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
   }
-
-
   $values = array_merge($formValues, array(
     'owner_type' => $viewer->getType(),
     'owner_id' => $viewer->getIdentity(),
@@ -102,8 +131,8 @@ if( !$this->_helper->requireAuth()->setAuthParams('bill', null, 'create')->isVal
     //getting invoice number........
   $bill_number = '';
   $bill_number = Engine_Api::_()->getDbTable('bills', 'bill')->setBillNumber($values['domain'], $values['currencies']);
-    // print_r($v);
-    // die;
+    
+    //interting the values and finding the total..
   $totalamount = 0.0;
   for ($i = 1; $i <= $v['room']; $i++) {
     if (!empty($v['p_name' . $i]) or !empty($v['quantity' . $i]) or !empty($v['price' . $i])or !empty($v['total' . $i])) {
@@ -151,7 +180,7 @@ if( !$this->_helper->requireAuth()->setAuthParams('bill', null, 'create')->isVal
 
 
 
-      //invoice number generation
+//inserting the vlaues in to the bills tables.........
 
     $values['creator'] = $viewer->getTitle();
     date_default_timezone_set("Asia/Calcutta");
@@ -202,6 +231,7 @@ public function editAction()
   if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
   }
+//geting form of create and maping  the values..........................
 
   $this->view->form = $form = new Bill_Form_Create();
   $form->populate($bill->toArray());
@@ -215,6 +245,16 @@ public function editAction()
     return;
   }
   $v=$this->getRequest()->getPost();
+
+
+  //mobile number validation...
+        $regex =  "/^(\+\d{1,3}[- ]?)?\d{10}$/";
+        $mobile = $v['number'];
+
+        $isValid = preg_match($regex,$mobile);
+   
+        if(!$isValid) return $form->addError('Mobile number is not valid');
+
 
 //updating values.../updating in products table
 

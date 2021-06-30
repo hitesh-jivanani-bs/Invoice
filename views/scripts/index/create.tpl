@@ -3,7 +3,7 @@
 
 <?php
 $this->headScript()
-      ->appendFile($this->layout()->staticBaseUrl . '/application/modules/Bill/externals/scripts/js.js');
+      ->appendFile($this->layout()->staticBaseUrl . '/application/modules/Bill/externals/scripts/create.js');
 ?>
 
 <div class="layout_middle">
